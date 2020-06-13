@@ -1,6 +1,7 @@
+#!/usr/bin/env php
 <?php
 
-require '../src/PassGen.php';
+require 'PassGen.php';
 
 use PassGen as PassGen;
 
