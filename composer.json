@@ -1,5 +1,5 @@
 {
-    "name": "passgen/passgen",
+    "name": "agashe/passgen",
     "type": "library",
     "description": "Easy generate powerful passwords for your application.",
     "keywords": ["password","generators","security"],
