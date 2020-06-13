@@ -1,0 +1,26 @@
+<?php
+
+require '../src/PassGen.php';
+
+use PassGen as PassGen;
+
+$args = getopt("l:t:");
+
+try {
+    $password = '';
+    if (!empty($args)) {
+        if (!isset($args['l']))
+            $args['l'] = 10;
+
+        if (!isset($args['t']))
+            $args['t'] = '';
+
+        $password = PassGen\PassGen::generate(intval($args['l']), $args['t']);
+    } else {
+        $password = PassGen\PassGen::generate();
+    }
+
+    print "Your password: \r\n$password \r\n";
+} catch (\Exception $exp) {
+    print $exp->getMessage() . "\r\n";
+}
