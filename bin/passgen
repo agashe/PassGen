@@ -1,27 +1,82 @@
 #!/usr/bin/env php
 <?php
 
-require 'PassGen.php';
+/**
+ * PassGen v1.0.0 -- CLI Version --
+ * <https://github.com/agashe/PassGen>
+ * 
+ * Easy generate powerful passwords for your application.
+ * 
+ * Author: Mohamed Yousef <engineer.mohamed.yossef@gmail.com>
+ * License: MIT
+ */
 
-use PassGen as PassGen;
+/** ===================== [Start Generate Function] ===================== **/
 
-$args = getopt("l:t:");
+function generateCLI($length = 10, $type = ''){
+    $types = [
+        'capital' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        'small'   => 'abcdefghijklmnopqrstuvwxyz',
+        'numeric' => '0123456789',
+        'symbols' => '`~!@#$%^&*:;()[]{}<>-+=*_.',
+    ];
 
-try {
-    $password = '';
-    if (!empty($args)) {
-        if (!isset($args['l']))
-            $args['l'] = 10;
-
-        if (!isset($args['t']))
-            $args['t'] = '';
-
-        $password = PassGen\PassGen::generate(intval($args['l']), $args['t']);
-    } else {
-        $password = PassGen\PassGen::generate();
+    // validate the length
+    if (!is_int($length) || intval($length) < 1 || intval($length) > 50) {
+        return 'Invalid password\' length';
     }
 
-    print "Your password: \r\n$password \r\n";
-} catch (\Exception $exp) {
-    print $exp->getMessage() . "\r\n";
+    // validate the type then , create the pattern if valid!
+    $pattern = '';
+    if (is_string($type) && !is_array($type)) {
+        if (!empty($type)) {
+            $selectedTypes = array_unique(explode('|', trim($type, '|')));
+            foreach ($selectedTypes as $type) {
+                if (!array_key_exists($type, $types)) {
+                    return 'Invalid password\' type';
+                } else {
+                    $pattern .= $types[$type];
+                }
+            }
+        } else {
+            $pattern = implode($types);
+        } 
+    } else {
+        return 'Invalid password\' type';
+    }
+    
+    // create the password
+    $password = '';
+    $patternLength = strlen($pattern);
+    for ($i = 0;$i < $length;$i++) {
+        $password .= $pattern[mt_rand(0, $patternLength-1)];
+    }
+
+    return $password;
 }
+
+/** ===================== [End Generate Function] ===================== **/
+
+/** ===================== [Start Execution] ===================== **/
+
+// Read Options
+$args = getopt("l:t:");
+
+// Validate Options & Run
+$password = '';
+if (!empty($args)) {
+    if (!isset($args['l']))
+        $args['l'] = 10;
+
+    if (!isset($args['t']))
+        $args['t'] = '';
+
+    $password = generateCLI(intval($args['l']), $args['t']);
+} else {
+    $password = generateCLI();
+}
+
+// Print Result
+print "Your password: \r\n$password \r\n";
+
+/** ===================== [End Execution] ===================== **/
