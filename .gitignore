@@ -1,0 +1,24 @@
+# Installation Data
+/vendor
+composer.lock
+composer.phar
+.phpunit.result.cache
+phpunit.xml
+
+# App Data
+/storage
+.env
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs configs
+/.vscode
+/nbproject
+/.idea
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project

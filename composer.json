@@ -1,25 +1,27 @@
 {
     "name": "agashe/passgen",
     "type": "library",
-    "description": "Easy generate powerful passwords for your application.",
+    "description": "Easy generate powerful passwords for your applications",
     "keywords": ["password","generators","security"],
     "homepage": "https://github.com/agashe/PassGen",
     "license": "MIT",
+    "bin": "bin/passgen",
     "authors": [
         {
             "name": "Mohamed Yousef",
-            "email": "engineer.mohamed.yossef@gmail.com",
-            "homepage": "http://agashe.ga",
-            "role": "Senior PHP Developer"
+            "email": "engineer.mohamed.yossef@gmail.com"
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "agashe/var-dumper": "^0.1.5",
+        "phpunit/phpunit": "^11"
     },
     "autoload": {
         "psr-4": {
             "PassGen\\": "src/"
         }
-    },
-    "bin": "bin/passgen"
+    }
 }
