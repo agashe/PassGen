@@ -62,11 +62,10 @@ interface PasswordInterface
     /**
      * Set password length.
      *
-     * @param int $min
-     * @param int $max
+     * @param int $n
      * @return $this
      */
-    public function length(int $min, int $max): object;
+    public function length(int $n): object;
 
     /**
      * Create the password.
