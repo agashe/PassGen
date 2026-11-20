@@ -2,11 +2,28 @@
 
 namespace PassGen\Interfaces;
 
+use PassGen\Interfaces\RandomInterface;
+
 /**
  * Password Interface.
  */
 interface PasswordInterface
 {
+    /**
+     * Set random numbers generator.
+     *
+     * @param RandomInterface $generator
+     * @return void
+     */
+    public function setRandomGenerator(RandomInterface $generator): void;
+
+    /**
+     * Gt random numbers generator.
+     *
+     * @return RandomInterface
+     */
+    public function getRandomGenerator(): RandomInterface;
+
     /**
      * Enable capital letters.
      *

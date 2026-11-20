@@ -3,6 +3,9 @@
 namespace PassGen;
 
 use PassGen\Interfaces\PasswordInterface;
+use PassGen\Interfaces\RandomInterface;
+use PassGen\Random\OSRandom;
+use PassGen\Random\OpenSSLRandom;
 
 /**
  * Password Class.
@@ -13,10 +16,10 @@ class Password implements PasswordInterface
      * @var array default passwords patterns
      */
     const PASSWORD_PATTERNS = [
-        'CAPITAL_ALPHABET' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-        'SMALL_ALPHABET'   => 'abcdefghijklmnopqrstuvwxyz',
-        'DIGITS'          => '0123456789',
-        'SYMBOLS'          => '~!@#$%^&*()_-+={[}]|:;"\'<,>.?/`',
+        'CAPITAL' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        'SMALL'   => 'abcdefghijklmnopqrstuvwxyz',
+        'DIGITS'  => '0123456789',
+        'SYMBOLS' => '~!@#$%^&*()_-+={[}]|:;"\'<,>.?/`',
     ];
 
     /**
@@ -40,6 +43,11 @@ class Password implements PasswordInterface
     protected bool $all = true;
 
     /**
+     * @var RandomInterface $random
+     */
+    protected RandomInterface $random;
+
+    /**
      * @var Option capital letters pattern
      */
     protected Option $capital;
@@ -60,13 +68,52 @@ class Password implements PasswordInterface
     protected Option $symbols;
 
     /**
+     * Password Constructor.
+     */
+    public function __construct()
+    {
+        $this->capital = new Option();
+        $this->small   = new Option();
+        $this->digits  = new Option();
+        $this->symbols = new Option();
+    }
+
+    /**
+     * Set random numbers generator.
+     *
+     * @param RandomInterface $generator
+     * @return void
+     */
+    public function setRandomGenerator(RandomInterface $generator): void
+    {
+        $this->random = $generator;
+    }
+
+    /**
+     * Get random number generator.
+     *
+     * @return RandomInterface
+     */
+    public function getRandomGenerator(): RandomInterface
+    {
+        return empty($this->random) ?
+            (
+                extension_loaded('openssl') ?
+                    (new OpenSSLRandom()) :
+                    (new OSRandom())
+            )
+            :
+            $this->random;
+    }
+
+    /**
      * Enable capital letters.
      *
      * @param int $min
      * @param int $max
      * @return $this
      */
-    public function withCapital(int $min, int $max): object
+    public function withCapital(int $min = -1, int $max = -1): object
     {
         $this->capital->enabled = true;
         $this->capital->min = $min;
@@ -84,7 +131,7 @@ class Password implements PasswordInterface
      * @param int $max
      * @return $this
      */
-    public function withSmall(int $min, int $max): object
+    public function withSmall(int $min = -1, int $max = -1): object
     {
         $this->small->enabled = true;
         $this->small->min = $min;
@@ -102,7 +149,7 @@ class Password implements PasswordInterface
      * @param int $max
      * @return $this
      */
-    public function withDigits(int $min, int $max): object
+    public function withDigits(int $min = -1, int $max = -1): object
     {
         $this->digits->enabled = true;
         $this->digits->min = $min;
@@ -120,7 +167,7 @@ class Password implements PasswordInterface
      * @param int $max
      * @return $this
      */
-    public function withSymbols(int $min, int $max): object
+    public function withSymbols(int $min = -1, int $max = -1): object
     {
         $this->symbols->enabled = true;
         $this->symbols->min = $min;
@@ -167,6 +214,13 @@ class Password implements PasswordInterface
      */
     public function length(int $n): object
     {
+        if ($n < 1) {
+            throw new \InvalidArgumentException(
+                $this::class .
+                ': password length can\'t be less than 1'
+            );
+        }
+
         $this->length = $n;
 
         return $this;
@@ -184,11 +238,11 @@ class Password implements PasswordInterface
             $this->pattern = implode('', array_values(self::PASSWORD_PATTERNS));
         } else {
             if ($this->capital->enabled) {
-                $this->pattern .= self::PASSWORD_PATTERNS['CAPITAL_ALPHABET'];
+                $this->pattern .= self::PASSWORD_PATTERNS['CAPITAL'];
             }
 
             if ($this->small->enabled) {
-                $this->pattern .= self::PASSWORD_PATTERNS['SMALL_ALPHABET'];
+                $this->pattern .= self::PASSWORD_PATTERNS['SMALL'];
             }
 
             if ($this->digits->enabled) {
@@ -212,7 +266,9 @@ class Password implements PasswordInterface
         $patternLength = strlen($this->pattern);
 
         for ($i = 0;$i < $this->length;$i++) {
-            $password .= $this->pattern[mt_rand(0, $patternLength-1)];
+            $password .= $this->pattern[
+                $this->getRandomGenerator()->generate(0, $patternLength - 1)
+            ];
         }
 
         return $password;
@@ -221,7 +277,7 @@ class Password implements PasswordInterface
 
 class Option {
     public function __construct(
-        public bool $enabled = true,
+        public bool $enabled = false,
         public int $min = -1,
         public int $max = -1
     ) {}
