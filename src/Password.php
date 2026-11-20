@@ -43,40 +43,30 @@ class Password implements PasswordInterface
     protected bool $all = true;
 
     /**
+     * @var bool capital letters pattern
+     */
+    protected bool $capital = false;
+
+    /**
+     * @var bool small letters pattern
+     */
+    protected bool $small = false;
+
+    /**
+     * @var bool digits pattern
+     */
+    protected bool $digits = false;
+
+    /**
+     * @var bool symbols pattern
+     */
+    protected bool $symbols = false;
+
+
+    /**
      * @var RandomInterface $random
      */
     protected RandomInterface $random;
-
-    /**
-     * @var Option capital letters pattern
-     */
-    protected Option $capital;
-
-    /**
-     * @var Option small letters pattern
-     */
-    protected Option $small;
-
-    /**
-     * @var Option digits pattern
-     */
-    protected Option $digits;
-
-    /**
-     * @var Option symbols pattern
-     */
-    protected Option $symbols;
-
-    /**
-     * Password Constructor.
-     */
-    public function __construct()
-    {
-        $this->capital = new Option();
-        $this->small   = new Option();
-        $this->digits  = new Option();
-        $this->symbols = new Option();
-    }
 
     /**
      * Set random numbers generator.
@@ -109,15 +99,11 @@ class Password implements PasswordInterface
     /**
      * Enable capital letters.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withCapital(int $min = -1, int $max = -1): object
+    public function withCapital(): object
     {
-        $this->capital->enabled = true;
-        $this->capital->min = $min;
-        $this->capital->max = $max;
+        $this->capital = true;
 
         $this->all = false;
 
@@ -127,15 +113,11 @@ class Password implements PasswordInterface
     /**
      * Enable small letters.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withSmall(int $min = -1, int $max = -1): object
+    public function withSmall(): object
     {
-        $this->small->enabled = true;
-        $this->small->min = $min;
-        $this->small->max = $max;
+        $this->small = true;
 
         $this->all = false;
 
@@ -145,15 +127,11 @@ class Password implements PasswordInterface
     /**
      * Enable digits.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withDigits(int $min = -1, int $max = -1): object
+    public function withDigits(): object
     {
-        $this->digits->enabled = true;
-        $this->digits->min = $min;
-        $this->digits->max = $max;
+        $this->digits = true;
 
         $this->all = false;
 
@@ -163,15 +141,11 @@ class Password implements PasswordInterface
     /**
      * Enable symbols.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withSymbols(int $min = -1, int $max = -1): object
+    public function withSymbols(): object
     {
-        $this->symbols->enabled = true;
-        $this->symbols->min = $min;
-        $this->symbols->max = $max;
+        $this->symbols = true;
 
         $this->all = false;
 
@@ -237,19 +211,19 @@ class Password implements PasswordInterface
         if ($this->all) {
             $this->pattern = implode('', array_values(self::PASSWORD_PATTERNS));
         } else {
-            if ($this->capital->enabled) {
+            if ($this->capital) {
                 $this->pattern .= self::PASSWORD_PATTERNS['CAPITAL'];
             }
 
-            if ($this->small->enabled) {
+            if ($this->small) {
                 $this->pattern .= self::PASSWORD_PATTERNS['SMALL'];
             }
 
-            if ($this->digits->enabled) {
+            if ($this->digits) {
                 $this->pattern .= self::PASSWORD_PATTERNS['DIGITS'];
             }
 
-            if ($this->symbols->enabled) {
+            if ($this->symbols) {
                 $this->pattern .= self::PASSWORD_PATTERNS['SYMBOLS'];
             }
         }
@@ -273,12 +247,4 @@ class Password implements PasswordInterface
 
         return $password;
     }
-}
-
-class Option {
-    public function __construct(
-        public bool $enabled = false,
-        public int $min = -1,
-        public int $max = -1
-    ) {}
 }

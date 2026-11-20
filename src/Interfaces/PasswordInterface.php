@@ -27,38 +27,30 @@ interface PasswordInterface
     /**
      * Enable capital letters.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withCapital(int $min, int $max): object;
+    public function withCapital(): object;
 
     /**
      * Enable small letters.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withSmall(int $min, int $max): object;
+    public function withSmall(): object;
 
     /**
      * Enable digits.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withDigits(int $min, int $max): object;
+    public function withDigits(): object;
 
     /**
      * Enable symbols.
      *
-     * @param int $min
-     * @param int $max
      * @return $this
      */
-    public function withSymbols(int $min, int $max): object;
+    public function withSymbols(): object;
 
     /**
      * Define custom pattern.
