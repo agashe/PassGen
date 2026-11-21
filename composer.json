@@ -14,7 +14,8 @@
     ],
     "require": {
         "php": ">=8.0",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "sigmaphp/sigmaphp-console": "^0.1.4"
     },
     "require-dev": {
         "agashe/var-dumper": "^0.1.5",
