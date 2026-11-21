@@ -62,7 +62,6 @@ class Password implements PasswordInterface
      */
     protected bool $symbols = false;
 
-
     /**
      * @var RandomInterface $random
      */

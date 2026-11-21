@@ -35,7 +35,7 @@ class PasswordTest extends TestCase
      * @return void
      */
     #[RunInSeparateProcess]
-    public function testDEfault(): void
+    public function testDefault(): void
     {
         $result = $this->password->create();
 
